@@ -2,12 +2,17 @@ package com.psu.rbt;
 
 import java.util.Calendar;
 
+
+
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -40,9 +45,9 @@ public class CalculatePrice extends Activity {
 	private EditText percentBoss;
 	
 	private double cal,calPercentEmployee,calPercentBoss;
-	private int mYear;
-	private int mMonth;
-	private int mDay;
+	private int Year;
+	private int Month;
+	private int Day;
 	
 	private String amountWater_value,amountSheet_value,amountLump_value,amountScrap_value;
 	private String price_Water,price_Sheet,price_Lump,price_Scrap;
@@ -90,12 +95,24 @@ public class CalculatePrice extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				amountWater_value = amountWater.getText().toString();
-				double AW = Double.parseDouble(amountWater_value);
 				amountSheet_value = amountSheet.getText().toString();
-				double AS = Double.parseDouble(amountSheet_value);
 				amountLump_value = amountLump.getText().toString();
-				double AL = Double.parseDouble(amountLump_value);
 				amountScrap_value = amountScrap.getText().toString();
+				percent_Employee = percentEmployee.getText().toString();
+				percent_Boss = percentBoss.getText().toString();
+				
+				if(amountWater_value.length()==0 || amountSheet_value.length()==0 || 
+						amountLump_value.length()==0 || amountScrap_value.length()==0 
+						|| percent_Employee.length()==0 || percent_Boss.length()==0){
+					
+					DialogCheckEmpty();
+					
+				}
+				else{
+				
+				double AW = Double.parseDouble(amountWater_value);				
+				double AS = Double.parseDouble(amountSheet_value);				
+				double AL = Double.parseDouble(amountLump_value);
 				double ASc = Double.parseDouble(amountScrap_value);
 				
 				price_Water = getIntent().getExtras().getString("price_Water");
@@ -112,7 +129,7 @@ public class CalculatePrice extends Activity {
 				total = String.valueOf(cal);
 				Total.setText(total);
 				
-				percent_Employee = percentEmployee.getText().toString();
+				
 				double PerEm = Double.parseDouble(percent_Employee);
 				
 				calPercentEmployee = (PerEm/100)*cal;
@@ -120,13 +137,14 @@ public class CalculatePrice extends Activity {
 				totalEmployee = String.valueOf(calPercentEmployee);
 				TotalEmployee.setText(totalEmployee);
 				
-				percent_Boss = percentBoss.getText().toString();
+				
 				double PerBoss = Double.parseDouble(percent_Boss);
 				
 				calPercentBoss = (PerBoss/100)*cal;
 				
 				totalBoss = String.valueOf(calPercentBoss);
 				TotalBoss.setText(totalBoss);
+				}
 				
 			}});
 	    save_btn = (Button)findViewById(R.id.Save_btn);
@@ -182,9 +200,9 @@ public class CalculatePrice extends Activity {
         });
         
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        Year = c.get(Calendar.YEAR);
+        Month = c.get(Calendar.MONTH);
+        Day = c.get(Calendar.DAY_OF_MONTH);
 
         // display the current date (this method is below)
         updateDisplay();
@@ -196,7 +214,7 @@ public class CalculatePrice extends Activity {
 	    case DATE_DIALOG_ID:
 	        return new DatePickerDialog(this,
 	                    mDateSetListener,
-	                    mYear, mMonth, mDay);
+	                    Year, Month, Day);
 	    }
 	    return null;
 	}
@@ -206,9 +224,9 @@ public class CalculatePrice extends Activity {
         mDateDisplay.setText(
             new StringBuilder()
                     // Month is 0 based so add 1
-                    .append(mMonth + 1).append("-")
-                    .append(mDay).append("-")
-                    .append(mYear).append(" "));
+                    .append(Month + 1).append("-")
+                    .append(Day).append("-")
+                    .append(Year).append(" "));
     }
 	
     // the callback received when the user "sets" the date in the dialog
@@ -216,12 +234,26 @@ public class CalculatePrice extends Activity {
             new DatePickerDialog.OnDateSetListener() {
                 public void onDateSet(DatePicker view, int year, 
                                       int monthOfYear, int dayOfMonth) {
-                    mYear = year;
-                    mMonth = monthOfYear;
-                    mDay = dayOfMonth;
+                    Year = year;
+                    Month = monthOfYear;
+                    Day = dayOfMonth;
                     updateDisplay();
                 }
             };
+            
+    private void DialogCheckEmpty(){
+    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+        dialog.setPositiveButton("ตกลง", new OnClickListener() {
+        	@Override
+            public void onClick(DialogInterface dialog, int which) {
+        		dialog.cancel();
+            }
+        });
+        
+        dialog.show();
+    }
+    
             
   
 }
