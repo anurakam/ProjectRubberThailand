@@ -8,13 +8,16 @@ import java.util.StringTokenizer;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
+//import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -47,7 +50,7 @@ public class EditEmployee extends Activity {
 		header.setText("เพิ่มข้อมูลลูกจ้าง");
 		
 		
-		save_em_btn.setOnClickListener(new OnClickListener() {
+		save_em_btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -56,7 +59,8 @@ public class EditEmployee extends Activity {
 				lname = editLname.getText().toString();
 				phone = editPhone.getText().toString();
 				address = editAddress.getText().toString();
-				addEmployee(fname, lname, phone, address);
+				if(fname.length()!=0 || lname.length()!=0 || phone.length()!=0 || address.length()!=0){
+					addEmployee(fname, lname, phone, address);
 				editEmployee.setText("");
 				editLname.setText("");
 				editPhone.setText("");
@@ -64,7 +68,12 @@ public class EditEmployee extends Activity {
 				Toast.makeText(EditEmployee.this, "บันทึกเสร็จสิ้น",
 						Toast.LENGTH_LONG).show();
 				finish();
+				}
+				else{
+					DialogCheckEmpty();
+				}
 			}
+			
 
 			private void addEmployee(String fname, String lname, String phone,
 					String address) {
@@ -79,7 +88,20 @@ public class EditEmployee extends Activity {
 				db.insertOrThrow("employeedata", null, values);
 			}
 		});
+		
 
 	}
+	private void DialogCheckEmpty(){
+    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("กรุณากรอกข้อมูลอย่างน้อยหนึ่งช่อง");
+        dialog.setPositiveButton("ตกลง", new OnClickListener() {
+        	@Override
+            public void onClick(DialogInterface dialog, int which) {
+        		dialog.cancel();
+            }
+        });
+        
+        dialog.show();
+    }
 
 }

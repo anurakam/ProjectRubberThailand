@@ -31,7 +31,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="84dp"
                 android:background="@drawable/my_bg"
-                android:text="เปลี่ยน" />
+                android:text="เปลี่ยนวัน" />
 
             <TextView
                 android:id="@+id/textView2"
